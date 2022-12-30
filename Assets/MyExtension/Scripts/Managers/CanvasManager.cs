@@ -1,8 +1,6 @@
 using DG.Tweening;
-using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class CanvasManager : MonoBehaviour
 {
@@ -34,15 +32,15 @@ public class CanvasManager : MonoBehaviour
         gameWinPanel.SetActive(false);
         gameFailPanel.SetActive(false);
 
-        gameManager.GameWin += GameWin;
+        ActionManager.OpenWinPanel += GameWin;
         gameManager.GameFail += GameFail;
     }
 
     private void GameWin()
     {
-        //int levelIndex = PrefManager.GetLevel;
-        //levelComplatedText.text = levelIndex + "." + " Level Compleated!";
-        //SetPanel(gameWinPanel);
+        int levelIndex = PrefManager.GetLevel;
+        levelComplatedText.text = levelIndex + "." + " Level Compleated!";
+        SetPanel(gameWinPanel);
     }
 
     private void GameFail()

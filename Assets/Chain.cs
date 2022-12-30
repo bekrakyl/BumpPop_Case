@@ -1,4 +1,5 @@
 using Sirenix.Utilities;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -10,6 +11,9 @@ public class Chain : MonoBehaviour, ICollisionChain
     [SerializeField] private int chainHealth;
 
     private bool firstInteract = false;
+
+
+    private bool crashed;
 
     private void Start()
     {
@@ -30,6 +34,16 @@ public class Chain : MonoBehaviour, ICollisionChain
 
         if (chainHealth <= 0)
             CrashChain();
+
+        RunExtension.After(7f, () => CheckCrash());
+    }
+
+    private void CheckCrash()
+    {
+        if (crashed) return;
+
+        ActionManager.OpenWinPanel?.Invoke();
+
     }
 
     private void CrashChain()
@@ -45,5 +59,6 @@ public class Chain : MonoBehaviour, ICollisionChain
             //BoxCollider boxCollider = rb.GetComponent<BoxCollider>();
             //Destroy(boxCollider);
         }
+        crashed = true;
     }
 }

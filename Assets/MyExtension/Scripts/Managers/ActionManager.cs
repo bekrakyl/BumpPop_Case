@@ -13,6 +13,8 @@ public static class ActionManager
     public static Action<Ball> ActiveBall { get; set; }
     public static Action<Transform> SetCamTarget { get; set; }
 
+    public static Action OpenWinPanel { get; set; }
+
     public static void ClearActionManagerData()
     {
         var info = typeof(ActionManager)
