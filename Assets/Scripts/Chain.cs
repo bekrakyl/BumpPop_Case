@@ -1,5 +1,3 @@
-using Sirenix.Utilities;
-using System;
 using TMPro;
 using UnityEngine;
 
@@ -12,12 +10,11 @@ public class Chain : MonoBehaviour, ICollisionChain
 
     private bool firstInteract = false;
 
-
     private bool crashed;
 
     private void Start()
     {
-        chainHealthText.text = chainHealth.ToString();
+        SetChainText();
     }
 
     public void OnCollisionChain()
@@ -30,12 +27,13 @@ public class Chain : MonoBehaviour, ICollisionChain
             firstInteract = true;
         }
         chainHealth--;
-        chainHealthText.text = chainHealth.ToString();
+        SetChainText();
 
         if (chainHealth <= 0)
             CrashChain();
 
-        RunExtension.After(7f, () => CheckCrash());
+        RunExtension.After(8.5f, () => CheckCrash());
+
     }
 
     private void CheckCrash()
@@ -43,22 +41,30 @@ public class Chain : MonoBehaviour, ICollisionChain
         if (crashed) return;
 
         ActionManager.OpenWinPanel?.Invoke();
-
     }
 
     private void CrashChain()
     {
+        if (middleChain == null) return;
+
         Destroy(middleChain.gameObject);
         Rigidbody[] rigidbodies = transform.GetComponentsInChildren<Rigidbody>();
 
         foreach (Rigidbody rb in rigidbodies)
         {
             rb.constraints = RigidbodyConstraints.None;
-            rb.AddForce(Vector3.forward * 3f, ForceMode.Impulse);
-
-            //BoxCollider boxCollider = rb.GetComponent<BoxCollider>();
-            //Destroy(boxCollider);
+            rb.AddForce(Vector3.forward * 10f, ForceMode.Impulse);
+            BoxCollider boxCollider = rb.gameObject.GetComponent<BoxCollider>();
+            Destroy(boxCollider);
+            rb.gameObject.AddComponent<CapsuleCollider>();
         }
         crashed = true;
+    }
+
+    private void SetChainText()
+    {
+        if (chainHealthText == null) return;
+
+        chainHealthText.text = chainHealth.ToString();
     }
 }

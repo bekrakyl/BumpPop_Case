@@ -31,16 +31,21 @@ public class CameraMovement : MonoBehaviour
 
         ActionManager.SetCamTarget += SetCamTarget;
         ActionManager.ActiveBall += SetActiveBall;
+        ActionManager.GetActiveBall += GetActiveBall;
 
         gameManager.GameWin += GameWin;
         gameManager.GameFail += GameFail;
     }
 
+    private void GetActiveBall()
+    {
+        ActionManager.ActiveBall?.Invoke(target.GetComponent<Ball>());
+    }
 
     private void GameWin()
     {
         gameEnd = true;
-        transform.eulerAngles = new Vector3(60, 0, 0);
+        transform.eulerAngles = new Vector3(40, 0, 0);
     }
 
     private void GameFail()
@@ -77,9 +82,6 @@ public class CameraMovement : MonoBehaviour
     {
         if (target == null) return;
 
-        //Vector3 followPos = target.position + offset;
-
-        //transform.position = Vector3.Lerp(transform.position, followPos, lerpTime);
         if(!gameEnd)
             GameActiveFollow();
         else
@@ -101,7 +103,5 @@ public class CameraMovement : MonoBehaviour
 
         var lookPos = (activeBall ? target.position + target.forward * -offset.z + target.up * -offset.y : target.position) - transform.position;
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(lookPos), lerpTime / 1.25f);
-
-        //transform.rotation = Quaternion.Lerp(transform.rotation, rotation, lerpTime);
     }
 }

@@ -11,6 +11,7 @@ public static class ActionManager
     public static Action<GameData> OnDataReaded { get; set; }
     public static Action<GameData> UpdateData { get; set; }
     public static Action<Ball> ActiveBall { get; set; }
+    public static Action GetActiveBall { get; set; }
     public static Action<Transform> SetCamTarget { get; set; }
 
     public static Action OpenWinPanel { get; set; }

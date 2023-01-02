@@ -1,0 +1,4 @@
+repository "BumpPop-BekirAkyolCase@Bekir_Akyol@cloud"
+  path "/"
+    br "/main"
+    co "/main"

@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.Collections;
-using Sirenix.Utilities;
-using System;
 using DG.Tweening;
 
 public class BallThrower : MonoBehaviour
@@ -118,6 +116,7 @@ public class BallThrower : MonoBehaviour
 
         newBallSetted = false;
     }
+
     private void ResetLine()
     {
         if (activeBall == null) return;
@@ -130,10 +129,12 @@ public class BallThrower : MonoBehaviour
     {
         balls.Add(divisible.transform);
     }
+
     public void CheckNewBall()
     {
         if (findBallCoroutine != null)
             StopCoroutine(findBallCoroutine);
+
         findBallCoroutine = StartCoroutine(SetNewBall());
     }
 
@@ -144,6 +145,7 @@ public class BallThrower : MonoBehaviour
             Rigidbody body = item.GetComponent<Rigidbody>();
             DOTween.To(() => body.angularDrag, x => body.angularDrag = x, 5, 4f);
         }
+
         for (int i = 0; i < 5; i++)
         {
             FindNewBall();
@@ -152,20 +154,17 @@ public class BallThrower : MonoBehaviour
 
         Ball ball = balls.GetLast().gameObject.GetComponent<Ball>();
 
-
         newBallSetted = true;
-
 
         yield return new WaitForSeconds(3f);
 
         if (gameManager.ExecuteGame)
-            ActionManager.ActiveBall.Invoke(ball);
+            ActionManager.GetActiveBall?.Invoke();
         balls.Clear();
     }
 
     private void FindNewBall()
     {
-        Debug.Log("Finding...");
         List<Transform> tempList = new List<Transform>();
         tempList.AddRange(balls);
         tempList.Sort(tr => tr.position.z);

@@ -8,23 +8,25 @@ public class Ball : MonoBehaviour, ICollisionBall
     public Vector3 Dir { get => dir; set => dir = value; }
 
     private GameManager gameManager;
-
-    private Rigidbody body;
-
-    private Vector3 dir;
-
-    private bool throwed = false;
-
     private Managers managers;
+
+
 
     private MaterialManager materialManager;
     private PrefabManager prefabManager;
     private BallThrower ballThrower;
 
     private MeshRenderer mRenderer;
+    private Rigidbody body;
+
     private Material ballMat;
 
-    [SerializeField] private bool divised;
+    private Vector3 dir;
+
+    private bool divised;
+    private bool throwed = false;
+
+    [SerializeField] private GameObject targetSprite;
 
     private void Start()
     {
@@ -38,6 +40,24 @@ public class Ball : MonoBehaviour, ICollisionBall
         mRenderer = GetComponent<MeshRenderer>();
 
         SetBallMaterial();
+
+        ActionManager.ActiveBall += OnBallChoised;
+    }
+
+    private void OnBallChoised(Ball ball)
+    {
+        if (ball == null) 
+        {
+            if (targetSprite.activeSelf)
+                targetSprite.SetActive(false);
+            return; 
+        }
+
+        if (!throwed && !divised)
+        {
+            targetSprite.SetActive(true);
+            targetSprite.transform.LookAt(Camera.main.transform.position);
+        }
     }
 
     private void SetBallMaterial()
@@ -69,9 +89,9 @@ public class Ball : MonoBehaviour, ICollisionBall
 
         ballThrower.AddBall(this);
 
-        Rigidbody thisBody = gameObject.GetComponent<Rigidbody>();
-        thisBody.AddForce(ball.Dir);
-        thisBody.angularVelocity = ball.Dir;
+        body.AddForce(ball.Dir);
+        body.angularVelocity = ball.Dir;
+        body.velocity = new Vector3(body.velocity.x, 0, body.velocity.z);
         //thisBody.angularDrag = 3;
 
         SetLayer(gameObject);
@@ -88,14 +108,10 @@ public class Ball : MonoBehaviour, ICollisionBall
 
             divisedBall.Divised = true;
 
-            Rigidbody body = newBall.gameObject.GetComponent<Rigidbody>();
-            //body.angularDrag = 3;
-
-            //Vector3 dir = ball.Dir.normalized * Random.Range(20f, 45f);
-            //dir.x += Random.Range(-15f, 15f);
-            body.AddForce(ball.Dir);
-            body.velocity = thisBody.velocity + Vector3.right * Random.Range(-15f, 15f);
-            body.angularVelocity = thisBody.angularVelocity;
+            Rigidbody newBody = newBall.gameObject.GetComponent<Rigidbody>();
+            newBody.AddForce(Vector3.forward * 5f, ForceMode.Impulse);
+            newBody.velocity = body.velocity + Vector3.right * Random.Range(-10f, 10f);
+            newBody.velocity = new Vector3(newBody.velocity.x, 0, newBody.velocity.z);
 
             ballThrower.AddBall(divisedBall);
 
